@@ -1,0 +1,36 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7
+  - nightly
+
+matrix:
+  fast_finish: true
+
+cache:
+  directories:
+    - ./vendor
+
+install:
+  - composer --prefer-source install
+
+before-install:
+  - mkdir -p build/
+
+script:
+  - php bin/compiler.php
+  - php build/checker.phar check ./
+
+before_deploy:
+  - php bin/compiler.php
+
+deploy:
+  provider: releases
+  api_key: $API_KEY
+  file: build/checker.phar
+  skip_cleanup: true
+  on:
+    tags: true

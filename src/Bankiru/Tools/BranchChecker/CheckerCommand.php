@@ -38,11 +38,13 @@ class CheckerCommand extends Command
         $output->setDecorated(true);
         $errors = [];
 
-        $path                 = realpath($input->getArgument('path'));
-        $composerJsonFilename = realpath($path . '/composer.json');
+        $path = realpath($input->getArgument('path'));
+        if (is_dir($path)) {
+            $path = realpath($path . '/composer.json');
+        }
 
         $io       = $this->getIO();
-        $composer = Factory::create($io, $composerJsonFilename);
+        $composer = Factory::create($io, $path);
 
         if (!$input->getOption('no-lock-check')) {
             $locker = $composer->getLocker();

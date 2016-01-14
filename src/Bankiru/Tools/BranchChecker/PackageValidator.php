@@ -10,6 +10,7 @@ namespace Bankiru\Tools\BranchChecker;
 
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionParser;
+use Composer\Repository\PlatformRepository;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Semver\Constraint\MultiConstraint;
 
@@ -29,21 +30,25 @@ class PackageValidator
         /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
         $devMaster = new Constraint('==', $versionParser->normalize('dev-master'));
 
-        foreach ($package->getRequires() as $link) {
 
+        foreach ($package->getRequires() as $link) {
             $linkConstraint = $link->getConstraint();
+
+            if (preg_match(PlatformRepository::PLATFORM_PACKAGE_REGEX, $link->getTarget())) {
+                continue;
+            }
 
             if ($linkConstraint->matches($devMaster)) {
                 if ($allowDevMaster) {
                     continue;
                 }
 
-                $errors[] =
-                    sprintf('Package "%s" is required with branch constraint %s',
-                            $link->getTarget(),
-                            $linkConstraint->getPrettyString());
+                $errors[] = sprintf(
+                    'Package "%s" is required with branch constraint %s',
+                    $link->getTarget(),
+                    $linkConstraint->getPrettyString()
+                );
             }
-
 
             $constraints = [$linkConstraint];
 
@@ -53,10 +58,11 @@ class PackageValidator
 
             foreach ($constraints as $constraint) {
                 if ('dev-' === substr($constraint->getPrettyString(), 0, 4)) {
-                    $errors[] =
-                        sprintf('Package "%s" is required with branch constraint %s',
-                                $link->getTarget(),
-                                $linkConstraint->getPrettyString());
+                    $errors[] = sprintf(
+                        'Package "%s" is required with branch constraint %s',
+                        $link->getTarget(),
+                        $linkConstraint->getPrettyString()
+                    );
                 }
             }
         }
