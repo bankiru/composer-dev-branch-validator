@@ -1,0 +1,20 @@
+{
+  "name": "bankiru/composer-dev-branch-validator",
+  "description": "Validates dev-branches in composer.json",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pavel Batanov",
+      "email": "pavel@batanov.me"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Bankiru\\Tools\\": "src/Bankiru/Tools"
+    }
+  },
+  "require": {
+    "composer/composer": "~1.0@dev"
+  }
+}
