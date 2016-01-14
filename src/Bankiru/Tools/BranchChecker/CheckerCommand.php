@@ -8,7 +8,8 @@
 
 namespace Bankiru\Tools\BranchChecker;
 
-use Symfony\Component\Console\Command\Command;
+use Composer\Command\Command;
+use Composer\Factory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,15 +35,39 @@ class CheckerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $packageChecker = new PackageChecker($input->getOption('allow-dev-master'));
+        $output->setDecorated(true);
+        $errors = [];
 
-        $lockChecker = new NullLockChecker();
+        $path                 = realpath($input->getArgument('path'));
+        $composerJsonFilename = realpath($path . '/composer.json');
+
+        $io       = $this->getIO();
+        $composer = Factory::create($io, $composerJsonFilename);
+
         if (!$input->getOption('no-lock-check')) {
-            $lockChecker = new LockChecker($input->getOption('ignore-missing-lock'));
+            $locker = $composer->getLocker();
+
+            if (!$locker->isLocked() && !$input->getOption('ignore-missing-lock')) {
+                $errors[] = 'Lock file missing';
+            }
+            if ($locker->isLocked() && !$locker->isFresh()) {
+                $errors[] = 'Lock file hash invalid';
+            }
         }
 
-        $checker = new Checker($packageChecker, $lockChecker);
+        $packageValidator = new PackageValidator();
 
-        $checker->checkProject(realpath($input->getArgument('path')));
+        $errors = array_merge(
+            $errors,
+            $packageValidator->validatePackage($composer->getPackage(), $input->getOption('allow-dev-master'))
+        );
+
+        if (!$output->isQuiet()) {
+            foreach ($errors as $error) {
+                $output->writeln(sprintf('<comment>%s</comment>', $error));
+            }
+        }
+
+        return count($errors) > 0 ? 1 : 0;
     }
 }
