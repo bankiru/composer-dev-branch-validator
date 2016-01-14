@@ -12,10 +12,18 @@
 
 ## Installation
 
-Grab latest phar from GitHub releases page
+### Easy
 
-OR
+Grab latest phar from [GitHub releases page](https://github.com/bankiru/composer-dev-branch-validator/releases)
 
-composer --install-project 
+### Manual
+
+```bash
+create-project bankiru/composer-dev-branch-validator ./checker/
+cd checker/
+php -dphar.readonly=0 bin/compiler.php
+```
+
+You will get latest `build/checker.phar` ready for use.
 
 
