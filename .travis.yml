@@ -17,7 +17,7 @@ cache:
     - ./vendor
 
 install:
-  - composer --prefer-source install
+  - composer --prefer-dist  --optimize-autoloader --no-interaction install
 
 before-install:
   - mkdir -p build/
