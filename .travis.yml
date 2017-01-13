@@ -24,7 +24,7 @@ before-install:
 
 script:
   - php bin/compiler.php
-  - php build/checker.phar check ./
+  - php build/checker.phar
 
 before_deploy:
   - php bin/compiler.php
