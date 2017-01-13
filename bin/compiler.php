@@ -9,6 +9,7 @@ if (!@mkdir(BUILD_DIR) && !is_dir(BUILD_DIR)) {
 
 // create with alias "project.phar"
 $phar = new Phar(BUILD_DIR . 'checker.phar', 0, 'checker.phar');
+$phar->buildFromDirectory(ROOT_DIR . '/', '/\.pem$/');
 $phar->buildFromDirectory(ROOT_DIR . '/', '/\.php$/');
 $phar->buildFromDirectory(ROOT_DIR . '/', '/\.json$/');
 $phar->setStub($phar::createDefaultStub('bin/checker.php'));

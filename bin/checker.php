@@ -9,5 +9,9 @@ use Symfony\Component\Console\Input\ArgvInput;
 $input = new ArgvInput();
 
 $application = new Application();
-$application->add(new CheckerCommand());
+
+$command = new CheckerCommand();
+
+$application->add($command);
+$application->setDefaultCommand($command->getName(), true);
 $application->run($input);

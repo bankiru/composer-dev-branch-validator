@@ -1,6 +1,15 @@
 {
   "name": "bankiru/composer-dev-branch-validator",
-  "description": "Validates dev-branches in composer.json",
+  "description": "Validates dev-branches constraint in composer.json",
+  "type": "project",
+  "keywords": [
+    "composer",
+    "hooks",
+    "checks",
+    "validator",
+    "constraints",
+    "branch"
+  ],
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
@@ -11,10 +20,10 @@
   ],
   "autoload": {
     "psr-4": {
-      "Bankiru\\Tools\\": "src/Bankiru/Tools"
+      "Bankiru\\Tools\\BranchChecker\\": "./src/"
     }
   },
   "require": {
-    "composer/composer": "~1.0@dev"
+    "composer/composer": "~1.0"
   }
 }

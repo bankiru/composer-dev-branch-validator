@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: batanov.pavel
- * Date: 14.01.2016
- * Time: 15:55
- */
 
 namespace Bankiru\Tools\BranchChecker;
 
@@ -14,7 +8,7 @@ use Composer\Repository\PlatformRepository;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Semver\Constraint\MultiConstraint;
 
-class PackageValidator
+final class PackageValidator
 {
     /**
      * @param PackageInterface $package
@@ -27,9 +21,7 @@ class PackageValidator
         $errors = [];
 
         $versionParser = new VersionParser();
-        /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-        $devMaster = new Constraint('==', $versionParser->normalize('dev-master'));
-
+        $devMaster     = new Constraint('==', $versionParser->normalize('dev-master'));
 
         foreach ($package->getRequires() as $link) {
             $linkConstraint = $link->getConstraint();
@@ -53,11 +45,11 @@ class PackageValidator
             $constraints = [$linkConstraint];
 
             if ($linkConstraint instanceof MultiConstraint) {
-                $constraints = (new ConstraintAccessor($linkConstraint))->getConstraints();
+                $constraints = $linkConstraint->getConstraints();
             }
 
             foreach ($constraints as $constraint) {
-                if ('dev-' === substr($constraint->getPrettyString(), 0, 4)) {
+                if (0 === strpos($constraint->getPrettyString(), 'dev-')) {
                     $errors[] = sprintf(
                         'Package "%s" is required with branch constraint %s',
                         $link->getTarget(),
