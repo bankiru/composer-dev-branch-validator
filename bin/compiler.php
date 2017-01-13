@@ -1,7 +1,7 @@
 <?php
 
-define('CHECKER_ROOT_DIR', __DIR__ . '/../');
-define('CHECKER_BUILD_DIR', CHECKER_ROOT_DIR . '/build/');
+define('CHECKER_ROOT_DIR', __DIR__ . '/..');
+define('CHECKER_BUILD_DIR', CHECKER_ROOT_DIR . '/build');
 
 if (!@mkdir(CHECKER_BUILD_DIR) && !is_dir(CHECKER_BUILD_DIR)) {
     throw new \RuntimeException('Cannot create build dir');
